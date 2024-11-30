@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tl-deployment
+  labels:
+    app: tl
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: tl
+  template:
+    metadata:
+      labels:
+        app: tl
+    spec:
+      containers:
+        - name: tl-container
+          image: ansjaisw/transactionlog:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_DATASOURCE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: tl-config
+                  key: SPRING_DATASOURCE_URL
+          command: ["java", "-jar", "/app/transaction-log-application.jar"]
